@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.demo.projectPaymentRecv.mapper.ProjectPaymentRecv_Mapper">
+    <resultMap id="projectPaymentRecvVoMap" type="org.jeecg.modules.demo.projectPaymentRecv.vo.ProjectPaymentRecvVo">
+        <constructor>
+            <idArg column="id" javaType="string" />
+        </constructor>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="sys_org_code" property="sysOrgCode"/>
+        <result column="payment_serial_number" property="paymentSerialNumber"/>
+        <result column="project_fk_id" property="projectFkId"/>
+        <result column="payment_amount" property="paymentAmount"/>
+        <result column="kp_date" property="kpDate"/>
+        <result column="recv_date" property="recvDate"/>
+        <result column="remark" property="remark"/>
+        <result column="is_delete" property="isDelete"/>
+        <result column="project_index" property="projectIndex"/>
+        <result column="project_name" property="projectName"/>
+        <result column="client_name" property="clientName"/>
+    </resultMap>
+
+    <select id="getVoList" resultMap="projectPaymentRecvVoMap">
+        SELECT
+            ppr.id,
+            ppr.create_by,
+            ppr.create_time,
+            ppr.update_by,
+            ppr.update_time,
+            ppr.sys_org_code,
+            ppr.payment_serial_number,
+            ppr.project_fk_id,
+            ppr.payment_amount,
+            ppr.kp_date,
+            ppr.recv_date,
+            ppr.remark,
+            ppr.is_delete,
+            pm.project_name,
+            pm.project_index,
+            pm.client_name
+        FROM
+            project_payment_recv ppr
+                LEFT OUTER JOIN project_management pm ON pm.id = ppr.project_fk_id
+        WHERE
+            ppr.is_delete = 0
+            <if test="projectIndex != null">
+                AND pm.project_index like concat('%',#{projectIndex},'%')
+            </if>
+            <if test="projectName != null">
+                AND pm.project_name like concat('%',#{projectName},'%')
+            </if>
+            <if test="clientName != null">
+                AND pm.client_name like concat('%',#{clientName},'%')
+            </if>
+        ORDER BY
+            ppr.create_time DESC
+    </select>
+
+</mapper>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.demo.contractManagement.mapper.ContractManagementMapper">
+    <resultMap id="contractManagementVoResultMap" type="org.jeecg.modules.demo.contractManagement.vo.ContractManagementListVo">
+        <constructor>
+            <idArg column="id" javaType="string" />
+        </constructor>
+        <result property="indexId" column="index_id"/>
+        <result property="deptName" column="dept_name"/>
+        <result property="projectIndex" column="project_index"/>
+        <result property="projectFkId" column="project_fk_id"/>
+        <result property="contractIndex" column="contract_index"/>
+        <result property="contractName" column="contract_name"/>
+        <result property="contractSignDate" column="contract_sign_date"/>
+        <result property="contractScanned" column="contract_scanned"/>
+        <result property="remark" column="remark"/>
+        <collection property="contractPaymentTermVos" ofType="org.jeecg.modules.demo.contractManagement.vo.ContractPaymentTermVo">
+            <result property="spec" column="spec"/>
+            <result property="paymentAmount" column="term_payment_amount"/>
+            <result property="remark" column="cpt_remark"/>
+        </collection>
+        <collection property="contractPaymentRecvVos" ofType="org.jeecg.modules.demo.contractManagement.vo.ContractPaymentRecvVo">
+            <result property="paymentAmount" column="recv_payment_amount"/>
+            <result property="kpDate" column="kp_date"/>
+            <result property="payDate" column="cpr_pay_date"/>
+            <result property="remark" column="cpr_remark"/>
+        </collection>
+    </resultMap>
+    <select id="selectContractManagementVoList" resultMap="contractManagementVoResultMap">
+        SELECT
+            cm.id,
+            cm.index_id,
+            cm.dept_name,
+            pm.project_index,
+            cm.project_fk_id,
+            cm.contract_index,
+            cm.contract_name,
+            cm.contract_sign_date,
+            cm.contract_scanned,
+            cm.remark,
+            cpt.spec,
+            cpt.payment_amount as term_payment_amount,
+            cpt.remark as cpt_remark,
+            cpr.payment_amount as recv_payment_amount,
+            cpr.kp_date,
+            cpr.pay_date as cpr_pay_date,
+            cpr.remark as cpr_remark
+        FROM
+            contract_management cm
+                LEFT OUTER JOIN project_management pm ON cm.project_fk_id = pm.id AND pm.is_delete = 0
+                LEFT OUTER JOIN contract_payment_term cpt ON cm.id = cpt.contract_fk_id AND cpt.is_delete = 0
+                LEFT OUTER JOIN contract_payment_recv cpr ON cm.id = cpr.contract_fk_id AND cpr.is_delete = 0
+        WHERE
+            cm.is_delete = 0
+        ORDER BY
+            cm.create_time DESC
+    </select>
+</mapper>

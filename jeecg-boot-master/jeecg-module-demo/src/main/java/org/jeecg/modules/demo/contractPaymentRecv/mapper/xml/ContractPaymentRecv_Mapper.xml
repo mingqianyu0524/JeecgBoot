@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.demo.contractPaymentRecv.mapper.ContractPaymentRecv_Mapper">
+    <resultMap id="contractPaymentRecvVoMap" type="org.jeecg.modules.demo.contractPaymentRecv.vo.ContractPaymentRecvVo">
+        <constructor>
+            <idArg column="id" javaType="string" />
+        </constructor>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="sys_org_code" property="sysOrgCode"/>
+        <result column="payment_serial_number" property="paymentSerialNumber"/>
+        <result column="contract_fk_id" property="contractFkId"/>
+        <result column="payment_amount" property="paymentAmount"/>
+        <result column="kp_date" property="kpDate"/>
+        <result column="pay_date" property="payDate"/>
+        <result column="remark" property="remark"/>
+        <result column="is_delete" property="isDelete"/>
+        <result column="contract_name" property="contractName"/>
+        <result column="project_name" property="projectName"/>
+        <result column="contract_index" property="contractIndex"/>
+        <result column="project_index" property="projectIndex"/>
+    </resultMap>
+
+    <select id="getVoList" resultMap="contractPaymentRecvVoMap">
+        SELECT
+            cpr.id,
+            cpr.create_by,
+            cpr.create_time,
+            cpr.update_by,
+            cpr.update_time,
+            cpr.sys_org_code,
+            cpr.payment_serial_number,
+            cpr.contract_fk_id,
+            cpr.payment_amount,
+            cpr.kp_date,
+            cpr.pay_date,
+            cpr.remark,
+            cpr.is_delete,
+            cm.contract_name,
+            cm.contract_index,
+            pm.project_index,
+            pm.project_name
+        FROM
+            contract_payment_recv cpr
+                LEFT OUTER JOIN ( contract_management cm LEFT OUTER JOIN project_management pm ON cm.project_fk_id = pm.id ) ON cm.id = cpr.contract_fk_id
+        WHERE
+            cpr.is_delete = 0
+            <if test="contractName != null">
+                AND cm.contract_name like concat('%',#{contractName},'%')
+            </if>
+            <if test="contractIndex != null">
+                AND cm.contract_index like concat('%',#{contractIndex},'%')
+            </if>
+            <if test="projectName != null">
+                AND pm.project_name like concat('%',#{projectName},'%')
+            </if>
+            <if test="projectIndex != null">
+                AND pm.project_index like concat('%',#{projectIndex},'%')
+            </if>
+        ORDER BY
+            cpr.create_time DESC
+    </select>
+</mapper>

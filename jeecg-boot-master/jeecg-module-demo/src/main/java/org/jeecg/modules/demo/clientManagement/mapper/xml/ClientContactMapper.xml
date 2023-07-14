@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.demo.clientManagement.mapper.ClientContactMapper">
+
+	<update id="deleteByMainId" parameterType="java.lang.String">
+		UPDATE client_contact
+		SET is_delete = 1
+		WHERE
+			 client_fk_id = #{mainId} 	</update>
+	
+	<select id="selectByMainId" parameterType="java.lang.String" resultType="org.jeecg.modules.demo.clientManagement.entity.ClientContact">
+		SELECT * 
+		FROM  client_contact
+		WHERE
+			 client_fk_id = #{mainId} AND is_delete = 0 </select>
+</mapper>

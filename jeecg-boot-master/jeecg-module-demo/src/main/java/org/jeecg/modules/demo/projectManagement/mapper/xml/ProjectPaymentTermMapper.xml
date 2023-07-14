@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.demo.projectManagement.mapper.ProjectPaymentTermMapper">
+
+	<update id="deleteByMainId" parameterType="java.lang.String">
+		UPDATE project_payment_term
+		SET is_delete = 1
+		WHERE
+			 project_fk_id = #{mainId} 	</update>
+	
+	<select id="selectByMainId" parameterType="java.lang.String" resultType="org.jeecg.modules.demo.projectManagement.entity.ProjectPaymentTerm">
+		SELECT * 
+		FROM  project_payment_term
+		WHERE
+			 project_fk_id = #{mainId} AND is_delete = 0	</select>
+</mapper>
