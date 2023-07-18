@@ -15,6 +15,6 @@ import org.jeecg.modules.demo.projectPaymentRecv.vo.ProjectPaymentRecvVo;
  */
 public interface ProjectPaymentRecv_Mapper extends BaseMapper<ProjectPaymentRecv_> {
     List<ProjectPaymentRecvVo> getVoList(@Param("projectIndex") String projectIndex,
-                                         @Param("projectName") String projectName,
+                                         @Param("projectNameList") List<String> projectNameList,
                                          @Param("clientName") String clientName);
 }

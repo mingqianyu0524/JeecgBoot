@@ -23,8 +23,7 @@ public interface IContractPaymentRecv_Service extends IService<ContractPaymentRe
     }
 
     List<ContractPaymentRecvVo> getVoList(QueryWrapper<ContractPaymentRecv_> queryWrapper,
-                                          String contractName,
-                                          String contractIndex,
-                                          String projectName,
-                                          String projectIndex);
+                                          List<String> contractNameList,
+                                          List<String> projectNameList,
+                                          List<String> projectIndexList);
 }

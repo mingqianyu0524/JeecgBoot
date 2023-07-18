@@ -47,17 +47,74 @@
                 LEFT OUTER JOIN ( contract_management cm LEFT OUTER JOIN project_management pm ON cm.project_fk_id = pm.id ) ON cm.id = cpr.contract_fk_id
         WHERE
             cpr.is_delete = 0
-            <if test="contractName != null">
-                AND cm.contract_name like concat('%',#{contractName},'%')
+        <if test="!contractNameList.isEmpty()">
+            AND cm.contract_name
+            <if test="contractNameList.size() == 1">
+                <choose>
+                    <when test="
+                        !contractNameList.get(0).isEmpty()
+                        and contractNameList.get(0).charAt(0) == '!'
+                        and contractNameList.get(0).length() > 1">
+                        NOT LIKE SUBSTR(#{contractNameList[0]},2)
+                    </when>
+                    <otherwise>
+                        LIKE #{contractNameList[0]}
+                    </otherwise>
+                </choose>
             </if>
-            <if test="contractIndex != null">
-                AND cm.contract_index like concat('%',#{contractIndex},'%')
+            <if test="contractNameList.size() > 1">
+                IN
+                <foreach item="item" index="index" collection="contractNameList"
+                         open="(" separator="," close=")" nullable="true">
+                    #{item}
+                </foreach>
             </if>
-            <if test="projectName != null">
-                AND pm.project_name like concat('%',#{projectName},'%')
+        </if>
+            <if test="!projectNameList.isEmpty()">
+                AND pm.project_name
+                <if test="projectNameList.size() == 1">
+                    <choose>
+                        <when test="
+                        !projectNameList.get(0).isEmpty()
+                        and projectNameList.get(0).charAt(0) == '!'
+                        and projectNameList.get(0).length() > 1">
+                            NOT LIKE SUBSTR(#{projectNameList[0]},2)
+                        </when>
+                        <otherwise>
+                            LIKE #{projectNameList[0]}
+                        </otherwise>
+                    </choose>
+                </if>
+                <if test="projectNameList.size() > 1">
+                    IN
+                    <foreach item="item" index="index" collection="projectNameList"
+                             open="(" separator="," close=")" nullable="true">
+                        #{item}
+                    </foreach>
+                </if>
             </if>
-            <if test="projectIndex != null">
-                AND pm.project_index like concat('%',#{projectIndex},'%')
+            <if test="!projectIndexList.isEmpty()">
+                AND pm.project_index
+                <if test="projectIndexList.size() == 1">
+                    <choose>
+                        <when test="
+                        !projectIndexList.get(0).isEmpty()
+                        and projectIndexList.get(0).charAt(0) == '!'
+                        and projectIndexList.get(0).length() > 1">
+                            NOT LIKE SUBSTR(#{projectIndexList[0]},2)
+                        </when>
+                        <otherwise>
+                            LIKE #{projectIndexList[0]}
+                        </otherwise>
+                    </choose>
+                </if>
+                <if test="projectIndexList.size() > 1">
+                    IN
+                    <foreach item="item" index="index" collection="projectIndexList"
+                             open="(" separator="," close=")" nullable="true">
+                        #{item}
+                    </foreach>
+                </if>
             </if>
         ORDER BY
             cpr.create_time DESC

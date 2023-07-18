@@ -48,8 +48,9 @@ public class ProjectPaymentRecv_ServiceImpl extends ServiceImpl<ProjectPaymentRe
 
     @Override
     public List<ProjectPaymentRecvVo> getVoList(QueryWrapper<ProjectPaymentRecv_> queryWrapper,
-                                                String projectIndex, String projectName, String clientName) {
-        List<ProjectPaymentRecvVo> projectPaymentRecvVoList = projectPaymentRecv_mapper.getVoList(projectIndex, projectName, clientName);
+                                                String projectIndex, List<String> projectNameList, String clientName) {
+        // 按照selections筛选相应projectName
+        List<ProjectPaymentRecvVo> projectPaymentRecvVoList = projectPaymentRecv_mapper.getVoList(projectIndex, projectNameList, clientName);
         List<ProjectPaymentRecv_> projectPaymentRecvList = projectPaymentRecv_mapper.selectList(queryWrapper);
         // 按照id筛选查询结果
         Set<String> IdsFromList = projectPaymentRecvList.stream()

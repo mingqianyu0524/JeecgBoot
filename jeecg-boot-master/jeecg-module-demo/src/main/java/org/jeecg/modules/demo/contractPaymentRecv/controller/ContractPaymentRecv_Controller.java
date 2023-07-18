@@ -14,6 +14,7 @@ import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.demo.contractManagement.entity.ContractManagement;
 import org.jeecg.modules.demo.contractManagement.mapper.ContractManagementMapper;
 import org.jeecg.modules.demo.contractPaymentRecv.entity.ContractPaymentRecv_;
@@ -81,14 +82,31 @@ public class ContractPaymentRecv_Controller extends JeecgController<ContractPaym
 															   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 															   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 															   HttpServletRequest req) throws InvocationTargetException, IllegalAccessException {
-		 String contractIndex = contractPaymentRecvVo.getContractIndex();
-		 String contractName = contractPaymentRecvVo.getContractName();
-		 String projectIndex = contractPaymentRecvVo.getProjectIndex();
-		 String projectName = contractPaymentRecvVo.getProjectName();
 		 ContractPaymentRecv_ contractPaymentRecv_ = new ContractPaymentRecv_();
 		 BeanUtils.copyProperties(contractPaymentRecvVo,contractPaymentRecv_);
 		 QueryWrapper<ContractPaymentRecv_> queryWrapper = QueryGenerator.initQueryWrapper(contractPaymentRecv_, req.getParameterMap());
-		 List<ContractPaymentRecvVo> pageList = contractPaymentRecv_Service.getVoList(queryWrapper, contractName, contractIndex, projectName, projectIndex);
+
+		 // 使用SQL进行查询合同名称，项目编号和名称
+		 String contractName = contractPaymentRecvVo.getContractName();
+		 contractName = contractName != null ? contractName.replaceAll("\\*","%") : null;
+		 List<String> contractNameList = new ArrayList<>();
+		 if (oConvertUtils.isNotEmpty(contractName)) {
+			 contractNameList = Arrays.asList(contractName.split(","));
+		 }
+		 String projectName = contractPaymentRecvVo.getProjectName();
+		 projectName = projectName != null ? projectName.replaceAll("\\*","%") : null;
+		 List<String> projectNameList = new ArrayList<>();
+		 if (oConvertUtils.isNotEmpty(projectName)) {
+			 projectNameList = Arrays.asList(projectName.split(","));
+		 }
+		 String projectIndex = contractPaymentRecvVo.getProjectIndex();
+		 projectIndex = projectIndex != null ? projectIndex.replaceAll("\\*","%") : null;
+		 List<String> projectIndexList = new ArrayList<>();
+		 if (oConvertUtils.isNotEmpty(projectIndex)) {
+			 projectIndexList = Arrays.asList(projectIndex.split(","));
+		 }
+
+		 List<ContractPaymentRecvVo> pageList = contractPaymentRecv_Service.getVoList(queryWrapper, contractNameList, projectNameList, projectIndexList);
 		 IPage<ContractPaymentRecvVo> result = new Page<>(pageNo, pageSize);
 		 result.setRecords(pageList);
 		 return Result.OK(result);

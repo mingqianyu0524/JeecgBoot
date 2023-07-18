@@ -64,11 +64,10 @@ public class ContractPaymentRecv_ServiceImpl extends ServiceImpl<ContractPayment
 
     @Override
     public List<ContractPaymentRecvVo> getVoList(QueryWrapper<ContractPaymentRecv_> queryWrapper,
-                                                 String contractName,
-                                                 String contractIndex,
-                                                 String projectName,
-                                                 String projectIndex) {
-        List<ContractPaymentRecvVo> contractPaymentRecvVoList = contractPaymentRecv_mapper.getVoList(contractName, contractIndex, projectName, projectIndex);
+                                                 List<String> contractNameList,
+                                                 List<String> projectNameList,
+                                                 List<String> projectIndexList) {
+        List<ContractPaymentRecvVo> contractPaymentRecvVoList = contractPaymentRecv_mapper.getVoList(contractNameList, projectNameList, projectIndexList);
         List<ContractPaymentRecv_> contractPaymentRecvList = contractPaymentRecv_mapper.selectList(queryWrapper);
         // 按照id筛选查询结果
         Set<String> IdsFromList = contractPaymentRecvList.stream()

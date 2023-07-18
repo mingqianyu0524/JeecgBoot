@@ -43,17 +43,38 @@
         FROM
             project_payment_recv ppr
                 LEFT OUTER JOIN project_management pm ON pm.id = ppr.project_fk_id
-        WHERE
+        <where>
             ppr.is_delete = 0
+            <if test="!projectNameList.isEmpty()">
+                AND project_name
+                <if test="projectNameList.size() == 1">
+                    <choose>
+                        <when test="
+                        !projectNameList.get(0).isEmpty()
+                        and projectNameList.get(0).charAt(0) == '!'
+                        and projectNameList.get(0).length() > 1">
+                            NOT LIKE SUBSTR(#{projectNameList[0]},2)
+                        </when>
+                        <otherwise>
+                            LIKE #{projectNameList[0]}
+                        </otherwise>
+                    </choose>
+                </if>
+                <if test="projectNameList.size() > 1">
+                    IN
+                    <foreach item="item" index="index" collection="projectNameList"
+                             open="(" separator="," close=")" nullable="true">
+                        #{item}
+                    </foreach>
+                </if>
+            </if>
             <if test="projectIndex != null">
                 AND pm.project_index like concat('%',#{projectIndex},'%')
-            </if>
-            <if test="projectName != null">
-                AND pm.project_name like concat('%',#{projectName},'%')
             </if>
             <if test="clientName != null">
                 AND pm.client_name like concat('%',#{clientName},'%')
             </if>
+        </where>
         ORDER BY
             ppr.create_time DESC
     </select>

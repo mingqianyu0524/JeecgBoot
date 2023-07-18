@@ -350,9 +350,16 @@ public class SysDepartController {
 		
         // Step.1 组装查询条件
         QueryWrapper<SysDepart> queryWrapper = QueryGenerator.initQueryWrapper(sysDepart, request.getParameterMap());
+
+		String selections = request.getParameter("selections");
+		if(oConvertUtils.isNotEmpty(selections)) {
+			List<String> selectionList = Arrays.asList(selections.split(","));
+			queryWrapper.in("id",selectionList);
+		}
         //Step.2 AutoPoi 导出Excel
         ModelAndView mv = new ModelAndView(new JeecgEntityExcelView());
         List<SysDepart> pageList = sysDepartService.list(queryWrapper);
+
         //按字典排序
         Collections.sort(pageList, new Comparator<SysDepart>() {
             @Override

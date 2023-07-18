@@ -14,6 +14,7 @@ import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.demo.projectManagement.entity.ProjectManagement;
 import org.jeecg.modules.demo.projectManagement.mapper.ProjectManagementMapper;
 import org.jeecg.modules.demo.projectPaymentRecv.vo.ProjectPaymentRecvVo;
@@ -77,12 +78,18 @@ public class ProjectPaymentRecv_Controller extends JeecgController<ProjectPaymen
 															  @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 															  HttpServletRequest req) throws InvocationTargetException, IllegalAccessException {
 		 String projectIndex = projectPaymentRecvVo.getProjectIndex();
-		 String projectName = projectPaymentRecvVo.getProjectName();
+		 // 包含查询 - 项目名称
+		 String projectName = req.getParameter("projectName");
+		 projectName = projectName != null ? projectName.replaceAll("\\*","%") : null;
+		 List<String> projectNameList = new ArrayList<>();
+		 if (oConvertUtils.isNotEmpty(projectName)) {
+			 projectNameList = Arrays.asList(projectName.split(","));
+		 }
 		 String clientName = projectPaymentRecvVo.getClientName();
 		 ProjectPaymentRecv_ projectPaymentRecv_ = new ProjectPaymentRecv_();
 		 BeanUtils.copyProperties(projectPaymentRecvVo, projectPaymentRecv_);
 		 QueryWrapper<ProjectPaymentRecv_> queryWrapper = QueryGenerator.initQueryWrapper(projectPaymentRecv_, req.getParameterMap());
-		 List<ProjectPaymentRecvVo> list = projectPaymentRecv_Service.getVoList(queryWrapper, projectIndex, projectName, clientName);
+		 List<ProjectPaymentRecvVo> list = projectPaymentRecv_Service.getVoList(queryWrapper, projectIndex, projectNameList, clientName);
 		 IPage<ProjectPaymentRecvVo> result = new Page<>(pageNo, pageSize);
 		 result.setRecords(list);
 		 return Result.OK(result);

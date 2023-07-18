@@ -33,6 +33,6 @@ public interface IProjectPaymentRecv_Service extends IService<ProjectPaymentRecv
 
     List<ProjectPaymentRecvVo> getVoList(QueryWrapper<ProjectPaymentRecv_> queryWrapper,
                                          String projectIndex,
-                                         String projectName,
+                                         List<String> projectNameList,
                                          String clientName);
 }
