@@ -305,6 +305,10 @@ export const JeecgListMixin = {
       if(this.selectedRowKeys && this.selectedRowKeys.length>0){
         param['selections'] = this.selectedRowKeys.join(",")
       }
+      // 专为DepartList提供
+      if (this.checkedKeys && this.checkedKeys.length > 0) {
+        param['selections'] = this.checkedKeys.join(",")
+      }
       console.log("导出参数",param)
       downFile(this.url.exportXlsUrl,param).then((data)=>{
         if (!data) {

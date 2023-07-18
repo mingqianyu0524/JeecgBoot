@@ -13,13 +13,13 @@
           </a-upload>
           <a-button type="primary" icon="download" @click="handleDownloadTemplate('部门信息')">下载模板</a-button>
           <a-button title="删除多条数据" @click="batchDel" type="default">批量删除</a-button>
-          <!--<a-button @click="refresh" type="default" icon="reload" :loading="loading">刷新</a-button>-->
+          <a-button @click="refresh" type="default" icon="reload" :loading="loading">刷新</a-button>
         </a-row>
         <div style="background: #fff;padding-left:16px;height: 100%; margin-top: 5px">
           <a-alert type="info" :showIcon="true">
             <div slot="message">
               当前选择：<span v-if="this.currSelected.title">{{ getCurrSelectedTitle() }}</span>
-              <a v-if="this.currSelected.title" style="margin-left: 10px" @click="onClearSelected">取消选择</a>
+              <a v-if="this.checkedKeys.length > 0" style="margin-left: 10px" @click="onClearSelected">取消选择</a>
             </div>
           </a-alert>
           <a-input-search @search="onSearch" style="width:100%;margin-top: 10px" placeholder="请输入部门名称"/>
