@@ -7,7 +7,7 @@
 2. 在/db目录下，执行jeecg-boot-bak.sql
 
 ### 备份数据库
-mysqldump -uroot -proot --default-character-set=utf8mb4 --hex-blob --ignore-table=table_name database_name --result-file=D:\xxx.sql
+`mysqldump -uroot -proot --default-character-set=utf8mb4 --hex-blob --ignore-table=table_name database_name --result-file=D:\xxx.sql`
 
 ## 后端
 [后端布署]([http://doc.jeecg.com/3043612](http://doc.jeecg.com/2043886))
