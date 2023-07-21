@@ -26,6 +26,7 @@ import org.jeecg.modules.system.model.DepartIdModel;
 import org.jeecg.modules.system.model.SysDepartTreeModel;
 import org.jeecg.modules.system.service.ISysDepartService;
 import org.jeecg.modules.system.util.FindsDepartsChildrenUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -388,7 +389,16 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 		if(departList.size() > 0) {
 			for(SysDepart depart : departList) {
 				model = new SysDepartTreeModel(depart);
-				model.setChildren(null);
+				// Get children model list by parent id
+				QueryWrapper<SysDepart> queryWrapper = new QueryWrapper<>();
+				queryWrapper.eq("parent_id",model.getId());
+				List<SysDepart> childrenList = departMapper.selectList(queryWrapper);
+				List<SysDepartTreeModel> childrenModelList = new ArrayList<>();
+				for (SysDepart child : childrenList) {
+					SysDepartTreeModel childModel = new SysDepartTreeModel(child);
+					childrenModelList.add(childModel);
+				}
+				model.setChildren(childrenModelList);
 	    //update-end--Author:huangzhilin  Date:20140417 for：[bugfree号]组织机构搜索功回显优化----------------------
 				newList.add(model);
 			}
